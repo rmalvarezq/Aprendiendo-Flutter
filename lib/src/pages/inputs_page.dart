@@ -12,6 +12,9 @@ class _InputPageState extends State<InputPage> {
   String _email = '';
   String _password = '';
   String _fecha = '';
+  List _poderes = ['volar', 'soplar', 'Rayos X'];
+  String _opcionSeleccionada = 'volar';
+
   TextEditingController _inputFieldDateController = new TextEditingController();
 
   @override
@@ -21,7 +24,7 @@ class _InputPageState extends State<InputPage> {
         title: Text('Inputs'),
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         children: <Widget>[
           _crearInput(),
           Divider(),
@@ -30,6 +33,8 @@ class _InputPageState extends State<InputPage> {
           _crearPassword(),
           Divider(),
           _crearFecha(context),
+          Divider(),
+          _crearDropdown(),
           Divider(),
           _verPersona(),
         ],
@@ -95,13 +100,6 @@ class _InputPageState extends State<InputPage> {
             }));
   }
 
-  Widget _verPersona() {
-    return ListTile(
-      title: Text('Nombre: $_nombre'),
-      subtitle: Text('Email: $_email'),
-    );
-  }
-
   Widget _crearFecha(BuildContext context) {
     return TextField(
       controller: _inputFieldDateController,
@@ -135,8 +133,45 @@ class _InputPageState extends State<InputPage> {
     if (picked != null) {
       setState(() {
         _fecha = picked.toString();
-        _inputFieldDateController.text =  _fecha;
+        _inputFieldDateController.text = _fecha;
       });
     }
+  }
+
+  List<DropdownMenuItem<String>> getOpcionesDropdown() {
+    List<DropdownMenuItem<String>> lista = new List();
+    _poderes.forEach((poder) {
+      lista.add(DropdownMenuItem(
+        child: Text(poder),
+        value: poder,
+      ));
+    });
+    return lista;
+  }
+
+  Widget _crearDropdown() {
+    return Row(
+      children: <Widget>[
+        Icon(Icons.select_all),
+        SizedBox(width: 30.0),
+        Expanded(
+          child: DropdownButton(
+              value: _opcionSeleccionada,
+              items: getOpcionesDropdown(),
+              onChanged: (opt) {
+                // print(opt);
+                _opcionSeleccionada = opt;
+              }),
+        ),
+      ],
+    );
+  }
+
+  Widget _verPersona() {
+    return ListTile(
+      title: Text('Nombre: $_nombre'),
+      subtitle: Text('Email: $_email'),
+      trailing: Text(_opcionSeleccionada),
+    );
   }
 }
